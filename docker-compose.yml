@@ -11,7 +11,7 @@ networks:
 services:
   mysql:
     build:
-      context: .
+      context: service/
       dockerfile: Dockerfile
     command:
       - /bin/bash
