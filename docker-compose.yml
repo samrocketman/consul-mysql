@@ -1,0 +1,39 @@
+version: '2.2'
+volumes:
+  password-mnt:
+  mysql-data:
+networks:
+  internal:
+    driver: bridge
+  consul-network:
+    external:
+      name: docker-compose-ha-consul-vault-ui_internal
+services:
+  mysql:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command:
+      - /bin/bash
+      - -exc
+      - |
+        export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+        IP="$$(awk '/32 host/ && f ~ /172.16.238/ { print f; exit }; {f=$$2}' /proc/net/fib_trie)"
+        consul-agent.sh --consul-host consul.service.consul --advertise "$$IP" --service '{"service": {"name": "mysql", "port": 3306, "meta": {"title": "MySQL", "description": "MariaDB Relational Database Service.", "version": "'"$$(mysqld --version)"'"}}}'
+        /run_mysql.sh
+    expose:
+      - 3306
+    networks:
+      - internal
+      - consul-network
+    dns:
+      - 172.16.238.2
+      - 172.16.238.3
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - password-mnt:/mnt
+      - ${HOME}/git/github/docker-compose-ha-consul-vault-ui/consul:/usr/local/bin/consul:ro
+      - ${HOME}/git/github/docker-compose-ha-consul-vault-ui/jq:/usr/local/bin/jq:ro
+      - ${HOME}/git/github/docker-compose-ha-consul-vault-ui/scripts/consul-agent.sh:/bin/consul-agent.sh:ro
+      - ${HOME}/git/github/docker-compose-ha-consul-vault-ui/scripts/vault-functions.sh:/usr/local/share/vault-functions.sh:ro
+      - ${HOME}/git/github/docker-compose-ha-consul-vault-ui/vault:/usr/local/bin/vault:ro
