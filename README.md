@@ -15,6 +15,15 @@ healthy.
 
     mysql.service.consul:3306
 
+# Run a client external to the container
+
+```bash
+./mysql-client.sh
+```
+
+If you pass additional options to `mysql-client.sh`, then they will be passed
+directly to mysql.
+
 # License
 
 [MIT License](LICENSE)
