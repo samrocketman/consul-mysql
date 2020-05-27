@@ -13,4 +13,5 @@ docker run -it --rm --network docker-compose-ha-consul-vault-ui_internal \
   --dns 172.16.238.3 \
   -e mysql_user -e mysql_password \
   "${IMAGE}" \
-  mysql -P3306 -h mysql.service.consul -u "${mysql_user}" -p"${mysql_password}" "$@"
+  mysql -P3306 -h mysql.service.consul \
+    -u "${mysql_user}" -p"${mysql_password}" "$@"
