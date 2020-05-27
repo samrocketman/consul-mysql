@@ -22,7 +22,8 @@ healthy.
 ```
 
 If you pass additional options to `mysql-client.sh`, then they will be passed
-directly to mysql.
+directly to mysql.  If the last argument you pass is a database, then the
+database will automatically be selected upon connection.
 
 # License
 
